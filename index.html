@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Pakar Pinus Interaktif</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #4caf50;
+        --primary-dark: #388e3c;
+        --secondary: #2196f3;
+        --dark: #263238;
+        --light: #eceff1;
+        --gray: #b0bec5;
+        --danger: #f44336;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .chat-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chat-header {
+        background: var(--primary);
+        color: white;
+        padding: 15px 20px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #chat-box {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .message {
+        max-width: 80%;
+        padding: 12px 15px;
+        border-radius: 15px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .user-message {
+        align-self: flex-end;
+        background: var(--secondary);
+        color: white;
+        border-bottom-right-radius: 5px;
+      }
+
+      .bot-message {
+        align-self: flex-start;
+        background: var(--light);
+        border-bottom-left-radius: 5px;
+      }
+
+      .system-message {
+        align-self: center;
+        background: var(--gray);
+        color: white;
+        font-size: 0.9rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+      }
+
+      .loading-message {
+        background: transparent;
+        color: var(--gray);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--gray);
+        border-radius: 50%;
+        animation: bounce 1.4s infinite ease-in-out;
+      }
+
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .input-area {
+        padding: 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        gap: 10px;
+      }
+
+      #user-input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid var(--light);
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      #send-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      #send-btn:hover {
+        background: var(--primary-dark);
+      }
+
+      .options {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+
+      .option-btn {
+        background: var(--light);
+        border: none;
+        border-radius: 20px;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .option-btn:hover {
+        background: #cfd8dc;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chat-container">
+        <div class="chat-header">
+          <i class="fas fa-tree"></i>
+          <span>Asisten Pinus Interaktif</span>
+        </div>
+
+        <div id="chat-box">
+          <div class="message system-message">
+            Halo! Saya Asisten Pinus. Saya bisa membantu mengidentifikasi jenis
+            pohon pinus.
+          </div>
+          <div class="message bot-message">
+            Maukah Anda memulai dengan:
+            <div class="options">
+              <button class="option-btn" onclick="selectOption(1)">
+                Masukkan ukuran pohon
+              </button>
+              <button class="option-btn" onclick="selectOption(2)">
+                Unggah gambar pohon
+              </button>
+              <button class="option-btn" onclick="selectOption(3)">
+                Pelajari tentang pinus
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-area">
+          <input
+            type="text"
+            id="user-input"
+            placeholder="Ketik pesan Anda..."
+            autocomplete="off"
+          />
+          <button id="send-btn" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // State percakapan
+      const conversationState = {
+        waitingFor: null, // 'circumference', 'height', 'image', etc.
+        currentData: {},
+      };
+
+      // Inisialisasi chat
+      document.addEventListener("DOMContentLoaded", function () {
+        // Enter key untuk mengirim pesan
+        document
+          .getElementById("user-input")
+          .addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              sendMessage();
+            }
+          });
+      });
+
+      // Tampilkan pesan loading
+      function showLoading() {
+        const chatBox = document.getElementById("chat-box");
+        const loadingMsg = document.createElement("div");
+        loadingMsg.className = "message bot-message loading-message";
+        loadingMsg.innerHTML = `
+                <span>Memproses</span>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            `;
+        chatBox.appendChild(loadingMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        return loadingMsg;
+      }
+
+      // Tambahkan pesan ke chat
+      function addMessage(text, sender) {
+        const chatBox = document.getElementById("chat-box");
+        const messageDiv = document.createElement("div");
+
+        if (sender === "user") {
+          messageDiv.className = "message user-message";
+          messageDiv.textContent = text;
+        } else if (sender === "bot") {
+          messageDiv.className = "message bot-message";
+          messageDiv.innerHTML = text;
+        } else {
+          messageDiv.className = "message system-message";
+          messageDiv.textContent = text;
+        }
+
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      // Kirim pesan dari user
+      function sendMessage() {
+        const userInput = document.getElementById("user-input");
+        const message = userInput.value.trim();
+
+        if (message === "") return;
+
+        addMessage(message, "user");
+        userInput.value = "";
+
+        // Proses pesan user berdasarkan state
+        processUserMessage(message);
+      }
+
+      // Pilih opsi cepat
+      function selectOption(option) {
+        const options = [
+          null,
+          "Saya ingin mengidentifikasi pohon dengan ukuran",
+          "Saya ingin mengunggah gambar pohon",
+          "Saya ingin belajar tentang jenis pinus",
+        ];
+
+        if (option >= 1 && option <= 3) {
+          document.getElementById("user-input").value = options[option];
+          sendMessage();
+        }
+      }
+
+      // Proses pesan user
+      function processUserMessage(message) {
+        const loadingMsg = showLoading();
+
+        setTimeout(() => {
+          loadingMsg.remove();
+
+          if (conversationState.waitingFor === "circumference") {
+            processCircumference(message);
+          } else if (conversationState.waitingFor === "height") {
+            processHeight(message);
+          } else if (
+            message.toLowerCase().includes("ukuran") ||
+            message.toLowerCase().includes("identifikasi")
+          ) {
+            startMeasurementConversation();
+          } else if (
+            message.toLowerCase().includes("gambar") ||
+            message.toLowerCase().includes("unggah")
+          ) {
+            askForImageUpload();
+          } else if (
+            message.toLowerCase().includes("belajar") ||
+            message.toLowerCase().includes("tentang")
+          ) {
+            providePineEducation();
+          } else {
+            handleGeneralQuestion(message);
+          }
+        }, 1000);
+      }
+
+      // Mulai percakapan pengukuran
+      function startMeasurementConversation() {
+        conversationState.waitingFor = "circumference";
+        conversationState.currentData = {};
+
+        addMessage(
+          "Baik, mari kita ukur pohon Anda. Berapa lingkar batang pohon (dalam meter)? Ukur pada ketinggian 1.3m dari tanah.",
+          "bot"
+        );
+      }
+
+      // Proses lingkar batang
+      function processCircumference(message) {
+        const circumference = parseFloat(message.replace(",", "."));
+
+        if (isNaN(circumference) || circumference <= 0) {
+          addMessage(
+            "Mohon masukkan angka yang valid untuk lingkar batang (dalam meter). Contoh: 0.45",
+            "bot"
+          );
+          return;
+        }
+
+        conversationState.currentData.circumference = circumference;
+        conversationState.waitingFor = "height";
+
+        addMessage(
+          `Terima kasih. Lingkar batang: ${circumference}m. Sekarang, berapa tinggi pohon (dalam meter)?`,
+          "bot"
+        );
+      }
+
+      // Proses tinggi pohon
+      function processHeight(message) {
+        const height = parseFloat(message.replace(",", "."));
+
+        if (isNaN(height) || height <= 0) {
+          addMessage(
+            "Mohon masukkan angka yang valid untuk tinggi pohon (dalam meter). Contoh: 12.5",
+            "bot"
+          );
+          return;
+        }
+
+        conversationState.currentData.height = height;
+        conversationState.waitingFor = null;
+
+        // Simulasi identifikasi
+        identifyPine(conversationState.currentData);
+      }
+
+      // Minta unggah gambar
+      function askForImageUpload() {
+        addMessage(
+          "Silakan unggah gambar pohon yang ingin diidentifikasi dengan mengklik tombol di bawah:",
+          "bot"
+        );
+
+        // Buat input file tersembunyi
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.style.display = "none";
+        fileInput.onchange = function (e) {
+          if (e.target.files.length > 0) {
+            simulateImageIdentification(e.target.files[0]);
+          }
+        };
+
+        // Buat tombol unggah
+        const uploadBtn = document.createElement("button");
+        uploadBtn.className = "option-btn";
+        uploadBtn.innerHTML = '<i class="fas fa-camera"></i> Unggah Gambar';
+        uploadBtn.onclick = function () {
+          fileInput.click();
+        };
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        optionsDiv.appendChild(uploadBtn);
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        botMessage.appendChild(optionsDiv);
+
+        document.getElementById("chat-box").appendChild(botMessage);
+        document.getElementById("chat-box").scrollTop =
+          document.getElementById("chat-box").scrollHeight;
+      }
+
+      // Simulasi identifikasi gambar
+      function simulateImageIdentification(file) {
+        const loadingMsg = showLoading();
+
+        setTimeout(() => {
+          loadingMsg.remove();
+
+          const randomSpecies =
+            Math.random() > 0.5 ? "Douglas Fir" : "White Pine";
+          const confidence = (Math.random() * 0.3 + 0.7).toFixed(2); // 70-100% confidence
+
+          addMessage(
+            `Saya telah menganalisis gambar Anda. Hasil identifikasi:`,
+            "bot"
+          );
+          addMessage(
+            `<strong>${randomSpecies}</strong> (Tingkat keyakinan: ${(
+              confidence * 100
+            ).toFixed(0)}%)`,
+            "bot"
+          );
+          addMessage(
+            "Apakah Anda ingin mengetahui lebih lanjut tentang jenis ini atau mengidentifikasi pohon lain?",
+            "bot"
+          );
+
+          // Tambahkan opsi
+          const optionsDiv = document.createElement("div");
+          optionsDiv.className = "options";
+          optionsDiv.innerHTML = `
+                    <button class="option-btn" onclick="selectOption(3)">Pelajari tentang ${randomSpecies}</button>
+                    <button class="option-btn" onclick="selectOption(1)">Identifikasi pohon lain</button>
+                `;
+
+          const botMessage = document.createElement("div");
+          botMessage.className = "message bot-message";
+          botMessage.appendChild(optionsDiv);
+
+          document.getElementById("chat-box").appendChild(botMessage);
+          document.getElementById("chat-box").scrollTop =
+            document.getElementById("chat-box").scrollHeight;
+        }, 3000);
+      }
+
+      // Berikan edukasi tentang pinus
+      function providePineEducation() {
+        const pineTypes = [
+          {
+            name: "Douglas Fir",
+            scientific: "Pseudotsuga menziesii",
+            description:
+              "Berasal dari Amerika Utara, memiliki kerucut dengan ciri khas 'ekor tikus' yang menjulur.",
+            height: "Bisa mencapai 70-100m",
+            circumference: "Lingkar batang bisa mencapai 4-6m",
+          },
+          {
+            name: "White Pine",
+            scientific: "Pinus strobus",
+            description:
+              "Pinus putih timur dengan jarum panjang dan lembut dalam kelompok 5.",
+            height: "Biasanya 30-50m",
+            circumference: "Lingkar batang 1.5-3m",
+          },
+        ];
+
+        addMessage("Berikut informasi tentang beberapa jenis pinus:", "bot");
+
+        pineTypes.forEach((pine) => {
+          addMessage(
+            `<strong>${pine.name}</strong> (${pine.scientific})<br>` +
+              `${pine.description}<br>` +
+              `Tinggi: ${pine.height}<br>` +
+              `Lingkar batang: ${pine.circumference}`,
+            "bot"
+          );
+        });
+
+        addMessage(
+          "Ingin mengidentifikasi pohon atau mempelajari lebih lanjut?",
+          "bot"
+        );
+
+        // Tambahkan opsi
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        optionsDiv.innerHTML = `
+                <button class="option-btn" onclick="selectOption(1)">Identifikasi pohon</button>
+                <button class="option-btn" onclick="selectOption(3)">Pelajari lebih lanjut</button>
+            `;
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        botMessage.appendChild(optionsDiv);
+
+        document.getElementById("chat-box").appendChild(botMessage);
+        document.getElementById("chat-box").scrollTop =
+          document.getElementById("chat-box").scrollHeight;
+      }
+
+      // Identifikasi pinus berdasarkan data
+      function identifyPine(data) {
+        let species, confidence;
+
+        // Logika identifikasi sederhana
+        if (data.height < 15) {
+          species = "Douglas Fir";
+          confidence = 0.8 - data.circumference * 0.1;
+        } else {
+          species = "White Pine";
+          confidence = 0.7 + data.circumference * 0.05;
+        }
+
+        // Pastikan confidence antara 0.5-0.95
+        confidence = Math.max(0.5, Math.min(0.95, confidence));
+
+        addMessage(`Berdasarkan data yang Anda berikan:`, "bot");
+        addMessage(
+          `Lingkar batang: ${data.circumference}m, Tinggi: ${data.height}m`,
+          "bot"
+        );
+        addMessage(
+          `Hasil identifikasi: <strong>${species}</strong> (Tingkat keyakinan: ${(
+            confidence * 100
+          ).toFixed(0)}%)`,
+          "bot"
+        );
+
+        // Tanyakan apakah ingin informasi lebih lanjut
+        addMessage(
+          `Apakah Anda ingin mengetahui karakteristik ${species} atau mengidentifikasi pohon lain?`,
+          "bot"
+        );
+
+        // Tambahkan opsi
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        optionsDiv.innerHTML = `
+                <button class="option-btn" onclick="askAboutSpecies('${species}')">Pelajari tentang ${species}</button>
+                <button class="option-btn" onclick="selectOption(1)">Identifikasi pohon lain</button>
+            `;
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        botMessage.appendChild(optionsDiv);
+
+        document.getElementById("chat-box").appendChild(botMessage);
+        document.getElementById("chat-box").scrollTop =
+          document.getElementById("chat-box").scrollHeight;
+      }
+
+      // Tampilkan info tentang spesies tertentu
+      function askAboutSpecies(species) {
+        const speciesInfo = {
+          "Douglas Fir": {
+            description:
+              "Douglas Fir (Pseudotsuga menziesii) adalah pohon asli Amerika Utara yang tumbuh cepat. Ciri khasnya adalah kerucut dengan bracts yang menyerupai ekor tikus.",
+            facts: [
+              "Bisa hidup hingga 1000 tahun",
+              "Kayunya banyak digunakan untuk konstruksi",
+              "Tinggi maksimal bisa mencapai 100m",
+            ],
+          },
+          "White Pine": {
+            description:
+              "White Pine (Pinus strobus) adalah pinus putih timur dengan jarum lembut. Jarumnya tumbuh dalam kelompok 5 (mnemonik 'white' memiliki 5 huruf).",
+            facts: [
+              "Pohon negara bagian Maine dan Michigan",
+              "Kayunya ringan dan mudah dikerjakan",
+              "Bisa mencapai tinggi 50m",
+            ],
+          },
+        };
+
+        addMessage(
+          `<strong>Informasi tentang ${species}:</strong><br>${speciesInfo[species].description}`,
+          "bot"
+        );
+        addMessage(
+          `<strong>Fakta menarik:</strong><br>- ${speciesInfo[
+            species
+          ].facts.join("<br>- ")}`,
+          "bot"
+        );
+
+        // Tanyakan apa lagi yang bisa dibantu
+        addMessage("Ada lagi yang bisa saya bantu?", "bot");
+
+        // Tambahkan opsi
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        optionsDiv.innerHTML = `
+                <button class="option-btn" onclick="selectOption(1)">Identifikasi pohon</button>
+                <button class="option-btn" onclick="selectOption(3)">Pelajari jenis lain</button>
+            `;
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        botMessage.appendChild(optionsDiv);
+
+        document.getElementById("chat-box").appendChild(botMessage);
+        document.getElementById("chat-box").scrollTop =
+          document.getElementById("chat-box").scrollHeight;
+      }
+
+      // Tangani pertanyaan umum
+      function handleGeneralQuestion(message) {
+        const responses = {
+          "hai|halo|hei|hi|hello":
+            "Halo! Ada yang bisa saya bantu tentang pohon pinus?",
+          "terima kasih|thanks|makasih":
+            "Sama-sama! Ada lagi yang bisa saya bantu?",
+          "tidak|nggak|sudah":
+            "Baiklah. Jika nanti Anda butuh bantuan, saya siap membantu!",
+          "apa kabar|how are you":
+            "Saya baik, terima kasih! Siap membantu Anda mengidentifikasi pinus.",
+          "help|bantuan|tolong":
+            "Saya bisa membantu mengidentifikasi jenis pinus berdasarkan ukuran atau gambar. Mau mulai dari mana?",
+        };
+
+        let foundResponse = false;
+
+        for (const [pattern, response] of Object.entries(responses)) {
+          const regex = new RegExp(pattern, "i");
+          if (regex.test(message)) {
+            addMessage(response, "bot");
+            foundResponse = true;
+
+            // Jika respons membutuhkan opsi
+            if (
+              response.includes("mulai dari mana") ||
+              response.includes("bantu")
+            ) {
+              const optionsDiv = document.createElement("div");
+              optionsDiv.className = "options";
+              optionsDiv.innerHTML = `
+                            <button class="option-btn" onclick="selectOption(1)">Dengan ukuran</button>
+                            <button class="option-btn" onclick="selectOption(2)">Dengan gambar</button>
+                        `;
+
+              const botMessage = document.createElement("div");
+              botMessage.className = "message bot-message";
+              botMessage.appendChild(optionsDiv);
+
+              document.getElementById("chat-box").appendChild(botMessage);
+              document.getElementById("chat-box").scrollTop =
+                document.getElementById("chat-box").scrollHeight;
+            }
+
+            break;
+          }
+        }
+
+        if (!foundResponse) {
+          addMessage(
+            "Maaf, saya tidak mengerti pertanyaan Anda. Saya bisa membantu mengidentifikasi jenis pinus berdasarkan ukuran atau gambar. Mau mencoba?",
+            "bot"
+          );
+
+          // Tambahkan opsi
+          const optionsDiv = document.createElement("div");
+          optionsDiv.className = "options";
+          optionsDiv.innerHTML = `
+                    <button class="option-btn" onclick="selectOption(1)">Ya, dengan ukuran</button>
+                    <button class="option-btn" onclick="selectOption(2)">Ya, dengan gambar</button>
+                    <button class="option-btn" onclick="selectOption(3)">Tidak, terima kasih</button>
+                `;
+
+          const botMessage = document.createElement("div");
+          botMessage.className = "message bot-message";
+          botMessage.appendChild(optionsDiv);
+
+          document.getElementById("chat-box").appendChild(botMessage);
+          document.getElementById("chat-box").scrollTop =
+            document.getElementById("chat-box").scrollHeight;
+        }
+      }
+    </script>
+  </body>
+</html>
