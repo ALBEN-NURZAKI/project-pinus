@@ -1,58 +1,72 @@
-# Sistem Pakar Identifikasi Pohon Pinus 🌲
+🌲 Sistem Pakar Identifikasi Pohon Pinus
+Aplikasi web interaktif berbasis Flask yang dirancang untuk mengidentifikasi jenis pohon pinus melalui percakapan dan input data sederhana.
 
-Aplikasi web interaktif untuk mengidentifikasi jenis pohon pinus menggunakan antarmuka percakapan berbasis AI.
 
-![Screenshot Aplikasi](/screenshot.png)
 
-## Fitur Utama ✨
+✨ Fitur Unggulan
+Antarmuka Percakapan Interaktif
+Komunikasi dua arah yang intuitif dan ramah pengguna.
 
-- **Chat Interaktif** - Percakapan alami dua arah
-- **Dua Metode Identifikasi**:
-  - Input ukuran manual (lingkar batang & tinggi)
-  - Unggah gambar (simulasi computer vision)
-- **Visualisasi Keyakinan** - Menampilkan tingkat akurasi
-- **Edukasi Jenis Pinus** - Informasi detail spesies pinus
-- **Riwayat Percakapan** - Menyimpan interaksi sebelumnya
-- **Desain Responsif** - Berfungsi di desktop dan mobile
+Metode Identifikasi Ganda
 
-## Cara Menggunakan 🚀
+Input manual: masukkan lingkar batang dan tinggi pohon.
 
-1. **Menggunakan Ukuran**:
+Upload gambar: deteksi visual menggunakan simulasi computer vision.
 
-   - Klik "Masukkan ukuran pohon"
-   - Berikan lingkar batang (dalam meter)
-   - Berikan tinggi pohon (dalam meter)
-   - Dapatkan hasil identifikasi
+Tingkat Keyakinan (Confidence Score)
+Menampilkan seberapa yakin sistem terhadap prediksi.
 
-2. **Menggunakan Gambar**:
+Informasi Edukatif
+Jelaskan karakteristik spesies pinus kepada pengguna.
 
-   - Klik "Unggah gambar pohon"
-   - Pilih foto pohon pinus
-   - Dapatkan identifikasi visual
+Riwayat Interaksi (opsional)
+Menyimpan hasil percakapan sebelumnya (bisa dikembangkan lebih lanjut).
 
-3. **Mode Pembelajaran**:
-   - Tanyakan tentang karakteristik spesies pinus
-   - Jelajahi berbagai jenis pinus
+Desain Responsif
+Optimal di berbagai ukuran layar: desktop maupun perangkat mobile.
 
-## Teknologi yang Digunakan 💻
+🚀 Cara Penggunaan
+1. Menggunakan Input Ukuran
+Masukkan lingkar batang pohon (meter).
 
-- Frontend: HTML5, CSS3, JavaScript
-- UI Framework: CSS murni
-- Ikon: Font Awesome
-- Font: Google Fonts (Poppins)
+Masukkan tinggi pohon (meter).
 
-## Panduan Instalasi ⚙️
+Klik tombol Prediksi untuk melihat hasil identifikasi.
 
-Tidak memerlukan instalasi untuk versi demo:
+2. Menggunakan Gambar
+Unggah foto pohon pinus dari perangkat Anda.
 
-1. Unduh semua file
-2. Buka `index.html` di browser modern
+Sistem akan memberikan hasil deteksi berbasis gambar.
 
-Untuk versi lengkap dengan backend:
+3. Mode Edukasi (fitur pengembangan)
+Ajukan pertanyaan seputar spesies pohon pinus.
 
-```bash
+Eksplorasi berbagai jenis dan karakteristik pinus.
+
+💻 Teknologi yang Digunakan
+Frontend: HTML5, CSS3, JavaScript
+
+Backend: Flask (Python)
+
+Model ML: scikit-learn (KNN)
+
+Styling: CSS murni (tanpa framework)
+
+Ikon & Font: Font Awesome, Google Fonts (Poppins)
+
+⚙️ Panduan Instalasi
+🔍 Versi Demo (Tanpa Backend)
+Unduh seluruh file proyek.
+
+Buka file index.html di browser modern.
+
+🧠 Versi Lengkap (Dengan Backend Python)
+bash
+Copy
+Edit
 git clone [repo-url]
 cd [repo-folder]
 pip install -r requirements.txt
 python app.py
-```
+Akses aplikasi melalui: http://127.0.0.1:5000
+
